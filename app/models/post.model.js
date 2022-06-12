@@ -6,6 +6,12 @@ module.exports = (sequelize, Sequelize) => {
     description: {
       type: Sequelize.STRING,
     },
+    city: {
+      type: Sequelize.STRING,
+    },
+    whatsApp: {
+      type: Sequelize.STRING,
+    },
     published: {
       type: Sequelize.BOOLEAN,
     },

@@ -16,9 +16,9 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// call sysc()
+// call sync()
 const db = require("./app/models");
-db.sequelize.sync();
+db.sequelize.sync({ alter: true });
 
 // simple route
 app.get("/", (req, res) => {
