@@ -40,10 +40,18 @@ exports.findAll = (req, res) => {
   const offset = limit * (page - 1);
 
   const title = req.query.title;
-  var condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+  var condition = title
+    ? { title: { [Op.like]: `%${title}%` }, published: true }
+    : { published: true };
 
-  Post.findAll({ offset: offset, limit: limit, where: condition })
+  Post.findAndCountAll({ offset: offset, limit: limit, where: condition })
     .then((data) => {
+      // const response = {
+      //   count: data.count,
+      //   rows: data.rows,
+
+      // }
+
       res.send(data);
     })
     .catch((err) => {
