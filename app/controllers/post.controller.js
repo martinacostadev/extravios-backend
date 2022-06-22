@@ -18,7 +18,7 @@ exports.create = (req, res) => {
     description: req.body.description,
     city: req.body.city,
     whatsApp: req.body.whatsApp,
-    published: req.body.published ? req.body.published : false,
+    published: req.body.published ? req.body.published : true,
   };
 
   // Save Post in the database
@@ -44,7 +44,12 @@ exports.findAll = (req, res) => {
     ? { title: { [Op.like]: `%${title}%` }, published: true }
     : { published: true };
 
-  Post.findAndCountAll({ offset: offset, limit: limit, where: condition })
+  Post.findAndCountAll({
+    offset: offset,
+    limit: limit,
+    where: condition,
+    order: [["id", "DESC"]],
+  })
     .then((data) => {
       // const response = {
       //   count: data.count,
