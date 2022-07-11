@@ -15,6 +15,9 @@ module.exports = (sequelize, Sequelize) => {
     published: {
       type: Sequelize.BOOLEAN,
     },
+    userId: {
+      type: Sequelize.STRING,
+    },
   });
 
   return Post;

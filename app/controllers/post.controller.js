@@ -19,6 +19,7 @@ exports.create = (req, res) => {
     city: req.body.city,
     whatsApp: req.body.whatsApp,
     published: req.body.published ? req.body.published : true,
+    userId: req.body.userId,
   };
 
   // Save Post in the database
@@ -116,33 +117,17 @@ exports.delete = (req, res) => {
     .then((num) => {
       if (num == 1) {
         res.send({
-          message: "Post was deleted successfully!",
+          message: "¡Publicación eliminada con éxito!",
         });
       } else {
         res.send({
-          message: `Cannot delete Post with id=${id}. Maybe Post was not found!`,
+          message: `No se pudo eliminar la publicación (${id}).`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Could not delete Post with id=" + id,
-      });
-    });
-};
-
-// Delete all Posts from the database.
-exports.deleteAll = (req, res) => {
-  Post.destroy({
-    where: {},
-    truncate: false,
-  })
-    .then((nums) => {
-      res.send({ message: `${nums} Posts were deleted successfully!` });
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while removing all posts.",
+        message: `No se pudo eliminar la publicación (${id}).`,
       });
     });
 };

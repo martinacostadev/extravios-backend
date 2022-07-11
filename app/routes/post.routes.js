@@ -21,8 +21,5 @@ module.exports = (app) => {
   // Delete a post with id
   router.delete("/:id", posts.delete);
 
-  // Create a new post
-  router.delete("/", posts.deleteAll);
-
   app.use("/api/posts", router);
 };
