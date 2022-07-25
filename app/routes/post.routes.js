@@ -21,5 +21,8 @@ module.exports = (app) => {
   // Delete a post with id
   router.delete("/:id", posts.delete);
 
+  // Update like field a post with id
+  router.put("/like/:id", posts.like);
+
   app.use("/api/posts", router);
 };

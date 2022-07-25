@@ -144,3 +144,49 @@ exports.findAllPublished = (req, res) => {
       });
     });
 };
+
+// Update a Like Field of Post by the id in the request
+exports.like = async (req, res) => {
+  const id = req.params.id;
+
+  const foundItem = await Post.findOne({
+    where: { id: id },
+  });
+
+  if (!foundItem) {
+    res.status(500).send({
+      message: "Error updating Post with id=" + id,
+    });
+  }
+
+  const postLikes = foundItem.likes >= 0 ? foundItem.likes : 0;
+  const likes = postLikes + 1;
+
+  console.log("likes", likes);
+
+  const body = {
+    likes: likes,
+  };
+
+  console.log("body", body);
+
+  Post.update(body, {
+    where: { id: id },
+  })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: "Post was updated successfully.",
+        });
+      } else {
+        res.send({
+          message: `Cannot update Post with id=${id}. Maybe Post was not found or req.body is empty! ${body}`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error updating Post with id=" + id,
+      });
+    });
+};
