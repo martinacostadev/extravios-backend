@@ -1,5 +1,6 @@
 const db = require("../models");
 const Post = db.posts;
+const Likes = db.likes;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Post
@@ -147,46 +148,47 @@ exports.findAllPublished = (req, res) => {
 
 // Update a Like Field of Post by the id in the request
 exports.like = async (req, res) => {
-  const id = req.params.id;
+  const userId = req.params.userId;
+  const postId = req.params.postId;
 
-  const foundItem = await Post.findOne({
-    where: { id: id },
+  const foundItem = await Likes.findOne({
+    where: { userId: userId, postId: postId },
   });
 
   if (!foundItem) {
-    res.status(500).send({
-      message: "Error updating Post with id=" + id,
-    });
-  }
-
-  const postLikes = foundItem.likes >= 0 ? foundItem.likes : 0;
-  const likes = postLikes + 1;
-
-  console.log("likes", likes);
-
-  const body = {
-    likes: likes,
-  };
-
-  console.log("body", body);
-
-  Post.update(body, {
-    where: { id: id },
-  })
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: "Post was updated successfully.",
+    const body = {
+      userId: userId,
+      postId: postId,
+    };
+    // Save Like
+    Likes.create(body)
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: err.message || "Ups! Ocurrió un error inesperado.",
         });
-      } else {
-        res.send({
-          message: `Cannot update Post with id=${id}. Maybe Post was not found or req.body is empty! ${body}`,
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Error updating Post with id=" + id,
       });
-    });
+  } else {
+    Likes.destroy({
+      where: { userId: userId, postId: postId },
+    })
+      .then((num) => {
+        if (num == 1) {
+          res.send({
+            message: "Me gusta eliminado con éxito",
+          });
+        } else {
+          res.send({
+            message: `No se pudo eliminar el voto (${id}).`,
+          });
+        }
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: `No se pudo eliminar  el voto (${id}).`,
+        });
+      });
+  }
 };
