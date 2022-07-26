@@ -18,9 +18,6 @@ module.exports = (sequelize, Sequelize) => {
     userId: {
       type: Sequelize.STRING,
     },
-    likes: {
-      type: Sequelize.INTEGER,
-    },
   });
 
   return Post;

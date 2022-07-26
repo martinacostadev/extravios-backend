@@ -52,12 +52,30 @@ exports.findAll = (req, res) => {
     where: condition,
     order: [["id", "DESC"]],
   })
-    .then((data) => {
-      // const response = {
-      //   count: data.count,
-      //   rows: data.rows,
+    .then(async (postReponse) => {
+      const count = postReponse?.count;
 
-      // }
+      const posts = postReponse?.rows?.map(async (res) => {
+        const post = res?.dataValues;
+
+        const likes = await Likes.count({
+          where: { postId: post?.id },
+        });
+
+        const data = {
+          ...post,
+          likes: likes,
+        };
+
+        return data;
+      });
+
+      const rows = await Promise.all(posts);
+
+      const data = {
+        count: count,
+        rows: rows,
+      };
 
       res.send(data);
     })
