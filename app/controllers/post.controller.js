@@ -40,7 +40,7 @@ exports.findAll = (req, res) => {
   const limit = 3;
   const page = req.query.page || 1;
   const offset = limit * (page - 1);
-
+  const userId = req?.query?.userId;
   const title = req.query.title;
   var condition = title
     ? { title: { [Op.like]: `%${title}%` }, published: true }
@@ -62,9 +62,19 @@ exports.findAll = (req, res) => {
           where: { postId: post?.id },
         });
 
+        let userLiked = false;
+        if (userId) {
+          userLiked = await Likes.count({
+            where: { userId: userId, postId: post?.id },
+          }).then((count) => {
+            return count > 0;
+          });
+        }
+
         const data = {
           ...post,
           likes: likes,
+          userLiked: userLiked,
         };
 
         return data;
