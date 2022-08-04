@@ -24,5 +24,8 @@ module.exports = (app) => {
   // Update Likes table
   router.put("/like/:userId&:postId", posts.like);
 
+  // Create a Post Report
+  router.post("/report", posts.createReport);
+
   app.use("/api/posts", router);
 };

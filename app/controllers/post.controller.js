@@ -1,5 +1,6 @@
 const db = require("../models");
 const Post = db.posts;
+const Report = db.reports;
 const Likes = db.likes;
 const Op = db.Sequelize.Op;
 
@@ -219,4 +220,37 @@ exports.like = async (req, res) => {
         });
       });
   }
+};
+
+// Create a Post Report
+exports.createReport = async (req, res) => {
+  const postId = req.body.postId;
+  const userId = req.body.userId;
+
+  const foundItem = await Report.findOne({
+    where: { userId: userId, postId: postId },
+  });
+
+  if (foundItem) {
+    res.status(500).send({
+      message: "Ya reportaste esta publicación.",
+    });
+    return;
+  }
+
+  const report = {
+    postId: postId,
+    userId: userId,
+  };
+
+  // Save Post Report in the database
+  Report.create(report)
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while reporting the Post.",
+      });
+    });
 };
